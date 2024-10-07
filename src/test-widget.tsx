@@ -12,7 +12,9 @@
  */
 
 import React, {ReactElement} from "react";
+import htmlParser from 'html-react-parser';
 import {BlockAttributes} from "widget-sdk";
+import {useArticleData} from "./hooks/useArticleData";
 
 /**
  * React Component
@@ -22,32 +24,29 @@ export interface TestWidgetProps extends BlockAttributes {
 }
 
 export const TestWidget = ({message, contentLanguage}: TestWidgetProps): ReactElement => {
+
+  // Get the article data from API
+  const articleData = useArticleData('66ce0559b660075a0efc7800', 'en_US')
+
   return <div>
-    <div data-widget-type="Section" data-widget-conf-grid-type="50-50"
-         data-widget-src="internal://staffbase.content.widgets.Section">
-      <div data-widget-type="NewsStage" data-widget-conf-design="2" data-widget-conf-layout="gradient"
-           data-widget-conf-effect="slide" data-widget-conf-limit="5"
-           data-widget-conf-show-arrows="true" data-widget-conf-show-dots="true"
-           data-widget-conf-show-channel-names="false" data-widget-conf-show-kicker="true"
-           data-widget-conf-show-teaser="false" data-widget-conf-show-social-actions="false"
-           data-widget-conf-autoplay="true" data-widget-conf-channel-id="5e431009d1e520b20267f7c1"
-           data-widget-conf-hide-if-empty="true" data-widget-conf-render-static-for-single-entry="true"
-           data-widget-src="internal://staffbase.content.widgets.NewsStage">
-      </div>
-      <div></div>
-    </div>
-    <div data-widget-conf-secondary-column-mode="true" data-widget-conf-open-in-mobile-browser="false"
-         data-widget-type="QuickLinks" data-widget-on-card="true"
-         data-widget-conf-design="2" data-widget-conf-type="list"
-         data-widget-src="internal://staffbase.content.widgets.QuickLinks">
+    <div>Hello {message} {contentLanguage}</div>
+    <div data-widget-on-card="true" data-widget-type="FileList"
+         data-widget-src="internal://staffbase.content.widgets.FileList">
       <ul>
-        <li>
-          <a href="https://app.maximize-it.eu/settings/groups" data-title="Open Groups Chooser" tabindex="0">Open
-          Groups Chooser</a>
+        <li data-type="webp" data-update-time="2024-09-06T00:00:00-05:00"><a
+          href="https://cdn-de1.staffbase.rocks/t1-backend/image/upload/v1725640188/QHC3oZ729l4FRoGsxlK0voiBHVowPII0gLAiRICjqfHUYvA91P1zA417Cn18b6cue8G1yimOtItNrUMLBJ4NJ0EOL8o84RiksE5o77pHOKGF5RD32zaE3hLtMahfQbodNveEbfTrDBRcmEbVUgOLSIPL3GsmhJDq4rjRSS1u5TL3GstIisc4tBj069UuFsqJ/image.webp">image.webp</a>
+        </li>
+        <li data-type="webp" data-update-time="2024-09-06T00:00:00-05:00"><a
+          href="https://cdn-de1.staffbase.rocks/t1-backend/image/upload/v1725639354/wlnWconFGzKpmOZjC4oqPKtb2vS60h8pwItCnozY3lkTjQDkMAJa8I20Y98GH7ZHpJXDT0KkNDLXv96nn3BoO7gXbf0AbwDnHdtySmfK2I0mpUU26XGh8Bwyt0aKIi9uvPdKq7Vzs4RUTlmGsv39ocAdKaKboKZoGPmuvf8HNBBG9zXOQEmZGFtUVGYI207J/image.webp">image.webp</a>
         </li>
       </ul>
     </div>
-    <div>Hello {message} {contentLanguage}</div>
+    <h3>Article Content using html-react-parser</h3>
+    <div>{htmlParser(articleData?.content || '')}</div>
+    <h3>Article Content using dangerouslySetInnerHTML</h3>
+    <div dangerouslySetInnerHTML={{__html: articleData?.content as string}}/>
+    <div>End Widget</div>
+    <hr />
   </div>
 };
 

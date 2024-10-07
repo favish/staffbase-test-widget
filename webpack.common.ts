@@ -12,6 +12,27 @@
  */
 
 import * as webpack from "webpack";
+import dotenv from "dotenv";
+
+// Load environment variables from .env file
+const env = dotenv.config().parsed
+
+export const fileName = process.env.REACT_APP_BUILD_FILE_NAME as string
+
+// Convert environment variables to Webpack DefinePlugin format
+const envKeys = env
+  ? Object.keys(env).reduce(
+      (prev, next) => {
+        prev[`process.env.${next}`] = JSON.stringify(env[next])
+
+        if (next === 'REACT_APP_BUILD_DATE') {
+          prev[`process.env.${next}`] = JSON.stringify(new Date().toISOString())
+        }
+        return prev
+      },
+      {} as { [key: string]: string },
+    )
+  : {}
 
 const config: webpack.Configuration = {
   entry: {
@@ -45,6 +66,9 @@ const config: webpack.Configuration = {
     filename: "[name].js",
     path: __dirname + "/dist",
   },
+  plugins: [
+    new webpack.DefinePlugin(envKeys),
+  ],
 };
 
 export default config;
